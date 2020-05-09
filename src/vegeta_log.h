@@ -39,7 +39,7 @@ class BaseLogHandler {
     virtual vegeta_function_status write_log(vegeta_log_message log_message) = 0;  
 };
 
-class FileLogHandler {
+class FileLogHandler : BaseLogHandler {
     //This log handler connects to a file
     //and stores to a file
     //This is the file descriptor of the file that is opened after connect called
