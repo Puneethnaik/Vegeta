@@ -1,5 +1,5 @@
 #include "vegeta_log.h"
-
+#include "os/unix/unix_misc.h"
 
 vegeta_function_status FileLogHandler::connect(std::string file_name, std::string location) {
     /*
@@ -14,10 +14,13 @@ vegeta_function_status FileLogHandler::connect(std::string file_name, std::strin
         *  
     */
     //O_APPEND is a atomic operation so is concurrent safe
-    this->fd = open(file_name.c_str(), O_WRONLY|O_APPEND);
+    std::string file_absolute_path;
+
+    file_absolute_path = vegeta_unix::join(location, file_name);
+    this->fd = open(file_absolute_path.c_str(), O_WRONLY|O_APPEND);
     if(this->fd < 0) {
         //create the file
-        this->fd = open(file_name.c_str(), O_WRONLY|O_APPEND|O_CREAT);
+        this->fd = open(file_absolute_path.c_str(), O_WRONLY|O_APPEND|O_CREAT);
         if(this->fd < 0) {
             return VEGETA_ERROR;
         }
@@ -42,10 +45,10 @@ vegeta_function_status init_log() {
     FileLogHandler *fileLogHandler = new FileLogHandler();
     vegeta_file_log_info vegeta_file_log_info;
 
-    vegeta_file_log_info.file_name = "usr/local/vegeta/vegeta_core.log";
+    vegeta_file_log_info.file_name = "vegeta_core.log";
     // vegeta_file_log_info.location = "/usr/local/vegeta";
     // /home/puneeth/Desktop/Projects/http-server/bin
-    vegeta_file_log_info.location = "/home/puneeth/Desktop/Projects/http-server/bin";
+    vegeta_file_log_info.location = "/home/puneeth/Desktop/Projects/http-server/bin/";
     if(fileLogHandler->connect(vegeta_file_log_info.file_name, vegeta_file_log_info.location) != VEGETA_OK) {
         return VEGETA_ERROR;
     }
