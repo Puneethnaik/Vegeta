@@ -4,7 +4,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string>
+#include <sys/stat.h>
 
+//Syslog Dependency
+#include <syslog.h>
 
 #include "vegeta_core.h"
 
@@ -37,6 +40,7 @@ struct vegeta_log_message {
 class BaseLogHandler {
     public:
     virtual vegeta_function_status write_log(vegeta_log_message log_message) = 0;  
+    virtual void close_log() = 0;
 };
 
 class FileLogHandler : BaseLogHandler {
@@ -49,7 +53,18 @@ class FileLogHandler : BaseLogHandler {
     public:
     vegeta_function_status connect(std::string, std::string);
     vegeta_function_status write_log(vegeta_log_message);
+    void close_log();
 };
 
-vegeta_function_status init_log();
+class SyslogHandler : BaseLogHandler {
+    //This log handler connects to syslog protocol
+    public:
+    vegeta_function_status connect(std::string);
+    vegeta_function_status write_log(vegeta_log_message);
+    void close_log();
+};
+
+SyslogHandler* init_log_syslog();
+FileLogHandler* init_log_file();
+
 #endif

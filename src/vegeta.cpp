@@ -4,10 +4,14 @@
 
 
 int main(int argc, char **argv) {
-    if(init_log() != VEGETA_OK) {
-        write(STDERR_FILENO, "error occured", 13);
-        return 1;
-    }
+    // FileLogHandler *logHandler;
 
+    // logHandler = init_log_file();
+
+    // // printf("fileloghandler address is %d", logHandler->fd);
+    // logHandler->close_log();
+    SyslogHandler *sysLogHandler;
+    sysLogHandler = init_log_syslog();
+    sysLogHandler->close_log();
     return VEGETA_OK;
 }
