@@ -22,11 +22,12 @@ namespace vegeta_unix {
             if (delimiterPos == path.npos) {
                 break;
             } else {
-                std::string component = path.substr(startPos, delimiterPos - 1);
+                std::string component = path.substr(startPos, delimiterPos - startPos);
                 components.push_back(component);
                 startPos = delimiterPos + 1;
             }
         }
+
         return components;
     }
 
